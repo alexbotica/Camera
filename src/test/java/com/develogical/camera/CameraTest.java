@@ -10,7 +10,7 @@ public class CameraTest {
     Sensor sensor = mock(Sensor.class);
     MemoryCard card = mock(MemoryCard.class);
     WriteCompleteListener listener = mock(WriteCompleteListener.class);
-    Camera cam = new Camera(sensor, card, listener);
+    Camera cam = new Camera(sensor, card);
 
     @Test
     public void switchingTheCameraOnPowersUpTheSensor() {
@@ -33,14 +33,13 @@ public class CameraTest {
         cam.powerOn();
         cam.pressShutter();
 
-        verify(card).write(new byte[]{12}, listener);
+        verify(card).write(eq(new byte[]{12}), any());
     }
 
     @Test
     public void testShutterPressDoesNothingOnPowerOff() {
         cam.powerOff();
         cam.pressShutter();
-        verifyZeroInteractions(sensor);
         verifyZeroInteractions(card);
     }
 
@@ -52,26 +51,19 @@ public class CameraTest {
         verify(sensor, never()).powerDown();
     }
 
-    /*@Test
+    @Test
     public void testSensorIsOffWhenWritingDoneAndCameraIsSwitchedOff() {
 
         ArgumentCaptor<WriteCompleteListener> aclistener = ArgumentCaptor.forClass(WriteCompleteListener.class);
 
+        doNothing().when(card).write(any(), aclistener.capture());
+
         cam.powerOn();
         cam.pressShutter();
-
-        verify(card).write(new byte[]{12}, aclistener.capture());
-
         cam.powerOff();
 
+        verify(sensor, never()).powerDown();
         aclistener.getValue().writeComplete();
-
-        cam.powerOff();
-
         verify(sensor).powerDown();
-
-
-
-    }*/
-
+    }
 }

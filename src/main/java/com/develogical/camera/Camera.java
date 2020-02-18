@@ -4,14 +4,12 @@ public class Camera {
 
     private final Sensor sensor;
     private final MemoryCard card;
-    private final WriteCompleteListener listener;
     private boolean power;
     private boolean writing;
 
-    public Camera(Sensor sensor, MemoryCard card, WriteCompleteListener listener) {
+    public Camera(Sensor sensor, MemoryCard card) {
         this.sensor = sensor;
         this.card = card;
-        this.listener = listener;
         this.power = false;
     }
 
@@ -19,7 +17,11 @@ public class Camera {
         if (power)
         {
             writing = true;
-            card.write(sensor.readData(), listener);
+            card.write(sensor.readData(), ()-> {
+                writing = false;
+                if (!power)
+                    sensor.powerDown();
+            });
         }
     }
 
@@ -29,13 +31,10 @@ public class Camera {
     }
 
     public void powerOff() {
-        if (power)
-        {
-            if (!writing)
-                sensor.powerDown();
+        if (!writing)
+            sensor.powerDown();
 
-            power = false;
-        }
+        power = false;
     }
 }
 
