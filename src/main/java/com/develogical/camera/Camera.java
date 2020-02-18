@@ -11,6 +11,7 @@ public class Camera {
         this.sensor = sensor;
         this.card = card;
         this.power = false;
+        this.writing = false;
     }
 
     public void pressShutter() {
@@ -36,7 +37,6 @@ public class Camera {
     public void powerOff() {
         if (!writing)
             sensor.powerDown();
-
         power = false;
     }
 }
