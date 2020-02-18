@@ -9,12 +9,12 @@ public class CameraTest {
 
     Sensor sensor = mock(Sensor.class);
     MemoryCard card = mock(MemoryCard.class);
-    WriteCompleteListener listener = mock(WriteCompleteListener.class);
     Camera cam = new Camera(sensor, card);
 
     @Test
     public void switchingTheCameraOnPowersUpTheSensor() {
         cam.powerOn();
+
         verify(sensor).powerUp();
     }
 
@@ -22,6 +22,7 @@ public class CameraTest {
     public void switchingTheCameraOffPowersDownTheSensor() {
         cam.powerOn();
         cam.powerOff();
+
         verify(sensor).powerDown();
     }
 
@@ -40,6 +41,7 @@ public class CameraTest {
     public void testShutterPressDoesNothingOnPowerOff() {
         cam.powerOff();
         cam.pressShutter();
+
         verifyZeroInteractions(card);
     }
 
@@ -48,6 +50,7 @@ public class CameraTest {
         cam.powerOn();
         cam.pressShutter();
         cam.powerOff();
+
         verify(sensor, never()).powerDown();
     }
 
