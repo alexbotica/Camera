@@ -17,10 +17,13 @@ public class Camera {
         if (power)
         {
             writing = true;
-            card.write(sensor.readData(), ()-> {
-                writing = false;
-                if (!power)
-                    sensor.powerDown();
+            card.write(sensor.readData(), new WriteCompleteListener() {
+                @Override
+                public void writeComplete() {
+                    writing = false;
+                    if (!power)
+                        sensor.powerDown();
+                }
             });
         }
     }
